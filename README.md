@@ -9,7 +9,7 @@ Random Radar Positioning
 Random Flight Pattern
 
 ## Kalman Filter
-Check V1 branch for working Kalman Filter
+Check "Kalman Filter" branch for working Kalman Filter
 
 Tweak settings at the top of main.m
 
