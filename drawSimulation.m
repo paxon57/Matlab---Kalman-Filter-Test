@@ -1,4 +1,5 @@
 function drawSimulation(k, map_size, radar_pos, real_pos, detection_pos, estimated_state)
+    figure(1);
     % Clear
     clf;
     % Draw Real Pos

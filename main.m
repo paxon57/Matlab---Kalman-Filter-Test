@@ -15,7 +15,7 @@ acceleration = 9.81;
 speed_change_chance = 0.03;
 % Radar Parameters
 radar_pos = [rand() * map_size, rand() * map_size];
-range_noise = 10;
+range_noise = 50;
 angle_noise = deg2rad(1);
 
 %% Setup
@@ -25,13 +25,14 @@ real_pos(1,:) = init_pos;
 detection_pos(1, :) = real_pos(1, :) + (rand(1,2) * 2 - 1) * range_noise;
 desired_ang = ang;
 desired_speed = speed;
+error = zeros(1, total_samples);
 % Kalman Filter Setup
 Q = [10 0 0 0;
     0 10 0 0;
     0 0 10 0;
     0 0 0 10]; % Process Covariance
-R = [10 0;
-    0 0.01]; % Measurement Covariance
+R = [200 0;
+    0 0.000025]; % Measurement Covariance
 P = eye(4);
 estimated_state(1,:) = [real_pos(1, :) + rand(1,2) * 1000, 150, 0];
 
@@ -90,6 +91,10 @@ for t = dt:dt:max_time
     estimated_state(k,:) = x_est';
     P = P_est;
     
+    % Save Error
+    err_dist = real_pos(k, :) - estimated_state(k, 1:2);
+    error(k) = sqrt(err_dist(1)^2 + err_dist(2)^2);
+
     % Detection Visualization
     detection_pos(k, :) = [radar_pos(1) + Z(1) * sin(Z(2));
         radar_pos(2) + Z(1) * cos(Z(2))];
@@ -99,3 +104,11 @@ for t = dt:dt:max_time
     % Kinda Real Time
     %pause(dt);
 end
+
+%% Plot Error Over Time
+figure(2);
+t = 0:dt:max_time;
+plot(t, error);
+xlabel("Time (s)");
+ylabel("Distance (m)")
+title("Estimation Error");
