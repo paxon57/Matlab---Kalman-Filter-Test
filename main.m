@@ -29,8 +29,8 @@ Q = [10 0 0 0;
     0 10 0 0;
     0 0 5 0;
     0 0 0 pi/5]; % Process Covariance
-R = [150 0;
-    0 150]; % Measurement Covariance
+R = [1870 0;
+    0 1870]; % Measurement Covariance
 estimated_state(1,:) = [map_size/2, map_size/2, 100, pi/2];
 P = eye(4);
 
