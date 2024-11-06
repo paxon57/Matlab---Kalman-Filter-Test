@@ -10,13 +10,13 @@ ang = (rand() * 2 - 1) * pi / 3 + pi / 2;
 speed = 150; % m/s
 % Plane Behaviour
 turn_speed = pi / 5;
-turn_chance = 0.05;
+turn_chance = 0.04;
 acceleration = 9.81;
 speed_change_chance = 0.03;
 % Radar Parameters
 radar_pos = [rand() * map_size, rand() * map_size];
-range_noise = 10;
-angle_noise = deg2rad(1);
+range_noise = 0;
+angle_noise = deg2rad(0);
 
 %% Setup
 total_samples = max_time / dt;
@@ -28,12 +28,12 @@ desired_speed = speed;
 % Kalman Filter Setup
 Q = [10 0 0 0;
     0 10 0 0;
-    0 0 10 0;
-    0 0 0 10]; % Process Covariance
-R = [10 0;
-    0 0.01]; % Measurement Covariance
+    0 0 5 0;
+    0 0 0 pi/5]; % Process Covariance
+R = [1 0;
+    0 deg2rad(1)]; % Measurement Covariance
+estimated_state(1,:) = [map_size / 2, map_size / 2, 150, pi/2];
 P = eye(4);
-estimated_state(1,:) = [real_pos(1, :) + rand(1,2) * 1000, 150, 0];
 
 %% Main Loop
 for t = dt:dt:max_time
@@ -64,8 +64,8 @@ for t = dt:dt:max_time
     %    0, 1, cos(estimated_state(k-1,4)) * dt, 0;
     %    0, 0, 1, 0;
     %    0, 0, 0, 1];
-    F = [1, 0, dt, 0;
-        0, 1, 0, dt;
+    F = [1, 0, sin(estimated_state(k-1,4)) * dt, dt * estimated_state(k-1,3) * cos(estimated_state(k-1,4));
+        0, 1, cos(estimated_state(k-1,4)) * dt, -dt * estimated_state(k-1,3) * cos(estimated_state(k-1,4));
         0, 0, 1, 0;
         0, 0, 0, 1];
     % State Prediction
