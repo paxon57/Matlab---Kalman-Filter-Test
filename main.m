@@ -15,8 +15,8 @@ acceleration = 9.81;
 speed_change_chance = 0.03;
 % Radar Parameters
 radar_pos = [rand() * map_size, rand() * map_size];
-range_noise = 50;
-angle_noise = deg2rad(1);
+range_noise = 20;
+angle_noise = deg2rad(0.5);
 
 %% Setup
 total_samples = max_time / dt;
@@ -27,12 +27,12 @@ desired_ang = ang;
 desired_speed = speed;
 error = zeros(1, total_samples);
 % Kalman Filter Setup
-Q = [10 0 0 0;
-    0 10 0 0;
-    0 0 10 0;
-    0 0 0 10]; % Process Covariance
-R = [200 0;
-    0 0.000025]; % Measurement Covariance
+Q = [8.33 0 0 0;
+    0 8.33 0 0;
+    0 0 8.33 0;
+    0 0 0 8.33]; % Process Covariance
+R = [33.4 0;
+    0 0.00000635]; % Measurement Covariance
 P = eye(4);
 estimated_state(1,:) = [real_pos(1, :) + rand(1,2) * 1000, 150, 0];
 

@@ -25,6 +25,7 @@ function drawSimulation(k, map_size, radar_pos, real_pos, detection_pos, estimat
     legend 'Real Position' 'Detections' '' 'Estimated Position';
     xlabel 'X';
     ylabel 'Y';
+    title 'Simulation';
     
     drawnow;
     hold on;
