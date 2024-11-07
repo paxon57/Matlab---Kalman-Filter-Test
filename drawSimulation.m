@@ -26,6 +26,7 @@ function drawSimulation(k, map_size, radar_pos, real_pos, detection_pos, estimat
     xlabel 'X';
     ylabel 'Y';
     title 'Simulation';
+    grid on;
     
     drawnow;
     hold on;

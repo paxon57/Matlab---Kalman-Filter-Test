@@ -29,7 +29,7 @@ error = zeros(total_samples, 3);
 % Kalman Filter Setup
 Q = [8.33 0 0 0;
     0 8.33 0 0;
-    0 0 8.0167 0;
+    0 0 8.33 0;
     0 0 0 0.033]; % Process Covariance
 R = [33.4 0;
     0 0.00000635]; % Measurement Covariance
@@ -61,6 +61,10 @@ for t = dt:dt:max_time
     
     %%% Kalman Filter
     %% Prediction
+    %F = [1, 0, dt, 0;
+    %    0, 1, 0, dt;
+    %    0, 0, 1, 0;
+    %    0, 0, 0, 1];
     estim = estimated_state(k-1,:);
     F = [1, 0, sin(estim(4)) * dt, dt * estim(3) * cos(estim(4));
         0, 1, cos(estim(4)) * dt, -dt * estim(3) * sin(estim(4));
@@ -115,22 +119,16 @@ plot(t, error(k_10s:end, 1)');
 xlabel("Time (s)");
 ylabel("Distance (m)");
 title("Position Error");
-grid on;
 % Velocity Error
 subplot(2,2,3);
 plot(t, error(k_10s:end, 2)');
 xlabel("Time (s)");
 ylabel("Velocity (m/s)");
 title("Velocity Error");
-grid on;
 % Heading Error
-% Temp fix to bring error to 0 from multiplies of 360 %%%%%%%%
-mul = round(mean(rad2deg(error(k_10s:end, 3)')) / 360);
-error(:, 3) = error(:, 3) - mul * 2 * pi;
 
 subplot(2,2,4);
 plot(t, rad2deg(error(k_10s:end, 3)'));
 xlabel("Time (s)");
 ylabel("Heading (deg)");
 title("Heading Error");
-grid on;
