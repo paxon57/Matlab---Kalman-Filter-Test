@@ -28,15 +28,16 @@ Direction noise is +/- 0.5 degrees.
 Velocity and direction is not measured, only estimated.
 The plane (tracking target) is randomly turning and accelerating.
 
-![image](https://github.com/user-attachments/assets/f1691e87-a495-4122-82d3-d087aa359e44)
+![image](https://github.com/user-attachments/assets/8de3cab9-213a-4b4e-aae8-a738e43148ce)
 
-Position error: Noise of up to 30 meters, Average of 18 meters
+Position error: Average of 10 meters
 
-Velocity error: Noise of up to 25 m/s, Average of 6 m/s
+Velocity error: Average of 1.05 m/s
 
-Heading error: Noise of up to 15 degrees, Average of 0.4 degrees
+Heading error: Average of 0.004 degrees
 
-![image](https://github.com/user-attachments/assets/c9c2896b-38c9-4b8a-98e3-088d402f1a31)
+![image](https://github.com/user-attachments/assets/b7eedc53-d4a7-4620-862b-7c02ac4ecc7e)
 
+![image](https://github.com/user-attachments/assets/81b1af7e-c9e7-46f2-b5a0-b162521e7328)
 
 Known Bug: Sometimes glitches out when measurements cross south from the radar.
