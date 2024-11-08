@@ -12,7 +12,7 @@ speed = 150; % m/s
 turn_speed = pi / 5;
 turn_chance = 0.05;
 acceleration = 9.81;
-speed_change_chance = 0.03;
+speed_change_chance = 0.03; %0.03
 % Radar Parameters
 radar_pos = [rand() * map_size, rand() * map_size];
 range_noise = 20;
@@ -26,15 +26,17 @@ detection_pos(1, :) = real_pos(1, :) + (rand(1,2) * 2 - 1) * range_noise;
 desired_ang = ang;
 desired_speed = speed;
 error = zeros(total_samples, 3);
+Z_hist = zeros(total_samples, 2);
 % Kalman Filter Setup
-Q = [8.33 0 0 0;
-    0 8.33 0 0;
-    0 0 8.0167 0;
-    0 0 0 0.033]; % Process Covariance
-R = [33.4 0;
-    0 0.00000635]; % Measurement Covariance
+Q = [10 0 0 0;
+    0 10 0 0;
+    0 0 8.0228 0;
+    0 0 0 0.00823]; % Process Covariance
+%Q = eye(4) * 0.5;
+R = [121.4797 -0.00665;
+    -0.00665 0.0000288]; % Measurement Covariance
 P = eye(4);
-estimated_state(1,:) = [real_pos(1, :) + rand(1,2) * 1000, 150, pi];
+estimated_state(1,:) = [real_pos(1, :) + rand(1,2) * 20, 150, pi];
 
 %% Main Loop
 for t = dt:dt:max_time
@@ -43,7 +45,7 @@ for t = dt:dt:max_time
     % Chance to turn
     if rand < turn_chance
         desired_ang = (rand() * 2 - 1) * pi / 4 + pi / 2;
-        disp(['Turning to: ', num2str(desired_ang)]);
+        disp(['t = ', num2str(t), 's - Turning to: ', num2str(desired_ang)]);
     end
     % Turning
     ang = ang + max(min(desired_ang - ang, turn_speed * dt), -turn_speed * dt);
@@ -51,7 +53,7 @@ for t = dt:dt:max_time
     % Chance to change speed
     if rand < speed_change_chance
         desired_speed = 100 + rand * 150;
-        disp(['Accelerating to: ', num2str(desired_speed)]);
+        disp(['t = ', num2str(t), 's - Accelerating to: ', num2str(desired_speed)]);
     end
     % Accelerating
     speed = speed + max(min(desired_speed - speed, acceleration * dt), -acceleration * dt);
@@ -80,6 +82,8 @@ for t = dt:dt:max_time
     % Simulated Measurements
     Z = measurement(real_pos(k, :)', radar_pos', [range_noise, angle_noise]);
     y = Z - measurement(x_pred(1:2)', radar_pos', [0 0]);
+    % Save history of real measurements
+    Z_hist(k, :) = Z';
     % State Estimation
     x_est = x_pred' + K * y;
     P_est = (eye(4) - K*H)*P_pred;
@@ -103,6 +107,8 @@ for t = dt:dt:max_time
     % Kinda Real Time
     %pause(dt);
 end
+% Fix first sample missing
+Z_hist(1, :) = Z_hist(2, :);
 
 %% Plot Errors Over Time
 t = 10:dt:max_time;
